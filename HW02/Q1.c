@@ -19,6 +19,7 @@ typedef struct Worker			// Worker structure definition
 		char Hyear[HYL];		// Heberew year type option
 		unsigned long Fyear;	// Foreign year type option
 	}Year;
+	int Ytype;					// Year type mark [ 0 = Heberew, 1 = Foreign]
 }Worker;						// Definition
 
 typedef struct WorkerList		// WorkerList structure definition
@@ -28,15 +29,15 @@ typedef struct WorkerList		// WorkerList structure definition
 } WorkerList;					// Definition
 
 // Functions signatures
-Worker* CreateWorker(unsigned long id, char* name, unsigned long salary, char Hyear[], char Fyear, int Ytype);		// Create Worker
-void PrintWorker(Worker* head, int Ytype);																			// Print Worker
-WorkerList* addWorker(WorkerList* head, Worker* w);																	// Add Worker
-int indexL(WorkerList* head, long unsigned id);																		// Index Finder (loop version)
-int indexR(WorkerList* head, long unsigned id);																		// Index Finder (recursive version)
-WorkerList* deleteWorstWorker(WorkerList* head);																	// Delete Worst Worker
-void update_worker(WorkerList* head, float percent);																// Update Worker
-WorkerList* reverse(WorkerList* head);																				// Reverst Workers
-void freeWorkers(WorkerList* head);																					// Free Workers
+Worker* CreateWorker(unsigned long id, char* name, unsigned long salary, char Hyear[], unsigned long Fyear, int Ytype);		// Create Worker
+void PrintWorker(Worker* head);																								// Print Worker
+WorkerList* addWorker(WorkerList* head, Worker* w);																			// Add Worker
+int indexL(WorkerList* head, long unsigned id);																				// Index Finder (loop version)
+int indexR(WorkerList* head, long unsigned id);																				// Index Finder (recursive version)
+WorkerList* deleteWorstWorker(WorkerList* head);																			// Delete Worst Worker
+void update_worker(WorkerList* head, float percent);																		// Update Worker
+WorkerList* reverse(WorkerList* head);																						// Reverst Workers
+void freeWorkers(WorkerList* head);																							// Free Workers
 
 // Main function
 void main()
@@ -51,24 +52,14 @@ void main()
 	head = addWorker(head, CreateWorker(321654987, "Lior", 8000, "tspb", 2012, 0));			// Fourth worker
 
 	// Print Worker
-	WorkerList* check = head;		// Running worker pointer
-	int Ytype;						// Year type [H / F]
-	do
+	WorkerList* printptr = head;			// Running worker pointer
+	while (printptr)						// While the running pointer is still in the list
 	{
-		printf("Enter a year type: 0 for heberew, 1 for foreign.\nYour choice: ");		// Instructions
-		fseek(stdin, 0, SEEK_END);														// Buffer cleaning
-		scanf("%d", &Ytype);															// Year type input
-		if ((Ytype != 0) && (Ytype != 1)) { puts("Invalid format. Try again."); }		// If the year type is not in the right format
-	} while ((Ytype != 0) && (Ytype != 1));												// Right format condition
-	printf("\n");
-
-	while (check)						// While the running pointer is still in the list
-	{
-		PrintWorker(check, Ytype);		// Print the current worker
-		check = check->next;			// Advance the pointer to the next worker
+		PrintWorker(printptr->data);		// Print the current worker
+		printptr = printptr->next;			// Advance the pointer to the next worker
 	}
 	printf("\n");
-	
+
 	// Index finder (loop format)
 	int id;														// Temporary id variable to put in the funcion
 	int index;													// Temporary index variable for the switch function
@@ -94,34 +85,38 @@ void main()
 	printf("\n");
 
 	// Deleting the worst worker
-	deleteWorstWorker(head);
-	
+	head = deleteWorstWorker(head);
+
 	// Updating the workers' salary
 	float percent;														// Temporary variable for the percent multiplication
 	printf("Enter a percent to multiply the workers salary by: ");		// Instructions
 	scanf("%f", &percent);												// Percent input
 	update_worker(head, percent);										// Salary updating function
+	printf("\n");
 
 	// Reversing the workers list
-	reverse(head);
+	head = reverse(head);
 
 	// Releasing all the workers
 	freeWorkers(head);
+
+	printf("End of the homework. Success.\n");
 }
 
 // Worker creation function [MANUAL VERSION]
-Worker* CreateWorker(unsigned long id, char* name, unsigned long salary, char Hyear[], char Fyear, int Ytype)
+Worker* CreateWorker(unsigned long id, char* name, unsigned long salary, char Hyear[], unsigned long Fyear, int Ytype)
 {
 	// Memory allocation and faliure condition
 	Worker* temp = (Worker*)malloc(sizeof(Worker));									// Temp creation
-	if (!temp) { puts("Malloc failure [CreateWorker >> temp malloc]"); exit (1); }	// Temp malloc faliure
-	
+	if (!temp) { puts("Malloc failure [CreateWorker >> temp malloc]"); exit(1); }	// Temp malloc faliure
+
 	// Function actions
 	temp->id = id;																				// ID input
 	temp->name = (char*)malloc((strlen(name) + 1) * sizeof(char));								// Name length correction
 	if (!temp->name) { puts("Malloc faliure[CreateWorker >> temp->name malloc]"); exit(1); };	// Name malloc faliure
 	strcpy(temp->name, name);																	// Name input
-	temp->salary = salary;																		// Salary input																		// Year type input
+	temp->salary = salary;																		// Salary input	
+	temp->Ytype = Ytype;																		// Year type input
 	if (Ytype == 0)																				// Heberew year input
 	{
 		strcpy(temp->Year.Hyear, Hyear);														// Set the start year in heberew format
@@ -139,15 +134,15 @@ Worker* CreateWorker(unsigned long id, char* name, unsigned long salary, char Hy
 
 
 // Worker printing function
-void PrintWorker(Worker* head, int Ytype)
+void PrintWorker(Worker* head)
 {
 	// Function actions
 	puts("Worker details:");
-	switch (Ytype)
+	switch (head->Ytype)
 	{
-		case 0: printf("ID: %ld\nName: %s\nSalary: %ld\nStart year: %s\n", head->id, head->name, head->salary, head->Year.Hyear); break;	// Heberew format printing
-		case 1: printf("ID: %ld\nName: %s\nSalary: %ld\nStart year: %ld\n", head->id, head->name, head->salary, head->Year.Fyear); break;	// Foreign format printing
-		default: puts("Error: Printworker_switch value was neither 0 nor 1"); break;														// Error condition
+	case 0: printf("ID: %ld\nName: %s\nSalary: %ld\nStart year: %s\n", head->id, head->name, head->salary, head->Year.Hyear); break;	// Heberew format printing
+	case 1: printf("ID: %ld\nName: %s\nSalary: %ld\nStart year: %lu\n", head->id, head->name, head->salary, head->Year.Fyear); break;	// Foreign format printing
+	default: puts("Error: Printworker_switch value was neither 0 nor 1"); break;														// Error condition
 	}
 	printf("\n");
 }
@@ -252,28 +247,12 @@ WorkerList* deleteWorstWorker(WorkerList* head)
 		return head;						// Return the head as is (NULL)
 	}
 
-	// Variables for condition [3/3]
-	WorkerList* curr = head;				// Current index
-	WorkerList* prev = NULL;				// Previous index
-	WorkerList* worst = curr;				// Worst worker index
-	WorkerList* worstPrev = NULL;			// Index to the previous item of the worst worker
-
 	// Existing list condition [3/3]
-	while (curr != NULL)								// While the pointer didn't each the end of the list
-	{
-		prev = curr;									// Point prev to curr
-		curr = curr->next;								// Point curr to curr next
-		if (curr->data->salary < worst->data->salary)	// If the curr's salary is smaller than the worst's one
-		{												// Connect worst to the list
-			worst = curr;								// Point worst to curr
-			worst->next = curr->next;					// Point worst's next to curr's next
-			worstPrev = prev;							// Point worst's prev to prev
-			worstPrev->next = prev->next;				// Point worst's prev's->next to prev's next in order to connect the two flanks
-		}
-	}
-	free(worst->data->name);				// Free worst's name
-	free(worst->data);						// Free worst's data
-	free(worst);							// Free worst itself
+	WorkerList* temp = head->next;			// don't lose next item on list.
+	free(head->data->name);					// Free worst's name
+	free(head->data);						// Free worst's data
+	free(head);								// Free worst itself
+	head = temp;							// for readability. can be logically omitted
 	return head;							// Return the head of the list as is
 }
 
@@ -321,8 +300,8 @@ void freeWorkers(WorkerList* head)
 	WorkerList* prev = NULL;				// Previous index
 	while (curr != NULL)					// While the current index is inside the list
 	{
-		curr = curr->next;					// Point curr to curr->next
 		prev = curr;						// Point prev to curr
+		curr = curr->next;					// Point curr to curr->next
 		free(prev->data->name);				// Free prev's name
 		free(prev->data);					// Free prev's data
 		free(prev);							// Free prev itself
