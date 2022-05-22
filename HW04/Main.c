@@ -38,40 +38,21 @@ Student* readFromBinFile(const char* fileName);
 
 int main()
 {
-	// function 3 checking
-	char filename[] = "studentList.txt";
-	int numberOfStudents = 0;
+
+	//Part A
 	int* coursesPerStudent = NULL;
-	makeStudentArrayFromFile(filename, &coursesPerStudent, &numberOfStudents);
+	int numberOfStudents = 0;
+	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
+	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
+	printStudentArray(students, coursesPerStudent, numberOfStudents);
+	//studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
+	
+	//Part B
+	Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
+	writeToBinFile("students.bin", transformedStudents, numberOfStudents);
+	Student* testReadStudents = readFromBinFile("students.bin");
 
-
-	// function 4 checking
-
-
-
-	// function 5 checking
-
-
-
-	// function 6 checking
-
-
-
-
-	////Part A
-	//int* coursesPerStudent = NULL;
-	//int numberOfStudents = 0;
-	//char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
-	//factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
-	//printStudentArray(students, coursesPerStudent, numberOfStudents);
-	////studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
-	//
-	////Part B
-	//Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
-	//writeToBinFile("students.bin", transformedStudents, numberOfStudents);
-	//Student* testReadStudents = readFromBinFile("students.bin");
-
-	////add code to free all arrays of struct Student
+	//add code to free all arrays of struct Student
 
 
 	_CrtDumpMemoryLeaks(); //uncomment this block to check for heap memory allocation leaks.
