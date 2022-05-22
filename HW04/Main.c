@@ -38,22 +38,6 @@ Student* readFromBinFile(const char* fileName);
 
 int main()
 {
-	// function 1 checking
-	/*char string[] = "Hello|world|";
-	int max = 100;
-	printf("%d", countPipes(string, max));*/
-
-	// function 2 checking
-	/*char filename[] = "studentList.txt";
-	int numberOfStudents = 0;
-	int* coursesPerStudent = NULL;
-	countStudentsAndCourses("studentList.txt", &coursesPerStudent, &numberOfStudents);
-	printf("%d\n", numberOfStudents);
-	for (int i = 0; i < numberOfStudents; i++)
-	{
-		printf("%d\n", coursesPerStudent[i]);
-	}*/
-
 	// function 3 checking
 	char filename[] = "studentList.txt";
 	int numberOfStudents = 0;
@@ -179,8 +163,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 	// Variables
 	char*** array;				// 3D array to be used as the returning triple pointer
 	char container[MAXCOUNT];	// Buffer to be used for lines read from the file
-	char* Sptr1 = container;	// String pointer to be used for the third dimention memory allocation [starting position]
-	char* Sptr2 = container;	// String pointer to be used for the third dimention memory allocation [ending position]
+	char* Sptr = container;		// String pointer to be used for the third dimention memory allocation [for the strtok]
 
 	// File opening
 	FILE* file = fopen(fileName, "rt");
@@ -204,7 +187,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 	// Second dimention memory allocation [as the number of the courses per student X2, plus one more for the student's name]
 	for (int i = 0, j = 0; i < *numberOfStudents; i++)
 	{
-		array[i] = (char**)malloc((1 + (*coursesPerStudent[i]) * 2) * sizeof(char*));
+		array[i] = (char**)malloc((1 + (*coursesPerStudent)[i] * 2) * sizeof(char*));
 		if (array[i] == NULL)
 		{
 			puts("Error: function make student array from file >> second dimention memory allocation faliure.");
@@ -215,49 +198,46 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		fgets(container, MAXCOUNT, file);
 
 		// Student name catching from file and memory allocation		
-		Sptr2 = strtok(Sptr1, '|');
-		array[i][j] = (char*)malloc((strlen(Sptr1) + 1) * sizeof(char));
+		Sptr = strtok(container, "|");
+		array[i][j] = (char*)malloc((strlen(Sptr) + 1) * sizeof(char));
 		if (array[i][j] == NULL)
 		{
 			puts("Error: function make student array from file >> third dimention memory allocation faliure.");
 			exit(1);
 		}
-		array[i][j] = Sptr1;
+		strcpy(array[i][j], Sptr);
 
 		// Variables advance for the course name catching
-		Sptr1 = (Sptr2 + 1);
 		j++;
 
 		// Course name and course grade catching from file
-		while (j < (1 + (*coursesPerStudent[i]) * 2))
+		while (j < (1 + (*coursesPerStudent)[i] * 2))
 		{
 
 			// Course name catching from file and memory allocation
-			Sptr2 = strtok(Sptr1, ',');
-			array[i][j] = (char*)malloc((strlen(Sptr2) + 1) * sizeof(char));
+			Sptr = strtok(NULL, ",");
+			array[i][j] = (char*)malloc((strlen(Sptr) + 1) * sizeof(char));
 			if (array[i][j] == NULL)
 			{
 				puts("Error: function make student array from file >> third dimention memory allocation faliure.");
 				exit(1);
 			}
-			array[i][j] = Sptr1;
+			strcpy(array[i][j], Sptr);
 
 			// Variables advance for the course grade catching
-			Sptr1 = (Sptr2 + 1);
 			j++;
 
 			// Course grade catching from file and memory allocation
-			Sptr2 = strtok(Sptr1, '|');
-			array[i][j] = (char*)malloc((strlen(Sptr1) + 1) * sizeof(char));
+			Sptr = strtok(NULL, "|");
+			array[i][j] = (char*)malloc((strlen(Sptr) + 1) * sizeof(char));
 			if (array[i][j] == NULL)
 			{
 				puts("Error: function make student array from file >> third dimention memory allocation faliure.");
 				exit(1);
 			}
-			array[i][j] = Sptr1;
+			strcpy(array[i][j], Sptr);
 
 			// Variable advance for the next inner loop / for exiting the inner loop
-			Sptr1 = (Sptr2 + 1);	// This could leak from the line. Is this ok? The loop is checked by j. In the worst case, add an if that checks if j still meets the terms before advancing the Sptr.
 			j++;
 		}
 		// Column variable initialization for the next outer loop
