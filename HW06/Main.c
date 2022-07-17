@@ -11,7 +11,7 @@ void main()
 	char a, b, c, d;
 	printf("Enter 4 chars for the function 1: ");
 	scanf("%c %c %c %c", &a, &b, &c, &d);
-	printf("\nVariables before:\na: %b\nb: %b\nc: %b\nd: %d\n", a, b, c, d);
+	printf("\nVariables before:\na: %b\nb: %b\nc: %b\nd: %b\n", a, b, c, d);
 
 	// Function 1 activation
 	int value1 = pack4Chars2Int(a, b, c, d);
