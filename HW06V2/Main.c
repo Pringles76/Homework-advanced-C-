@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Assignment functions
 int pack4Chars2Int(char c1, char c2, char c3, char c4);
 int checkEvenPairity(short input);
+
+// Personal functions
+void char2Bin(char c0);
+void dec2Bin(int n);
 
 void main()
 {
@@ -11,15 +16,22 @@ void main()
 	char a, b, c, d;
 	printf("Enter 4 chars for the function 1: ");
 	scanf("%c %c %c %c", &a, &b, &c, &d);
-	printf("\nVariables before:\na: %b\nb: %b\nc: %b\nd: %b\n", a, b, c, d);
 
+	// Char to binary conversion
+	printf("\nChars:\n");
+	printf("C1: "); char2Bin(a);
+	printf("C2: "); char2Bin(b);
+	printf("C3: "); char2Bin(c);
+	printf("C4: "); char2Bin(d);
+	
 	// Function 1 activation
 	int value1 = pack4Chars2Int(a, b, c, d);
-	printf("\nVariable after:\nint: %b", value1);
+	printf("\nChained char:\n");
+	dec2Bin(value1);
 
 	// Instruction and input for function 2
 	int n;
-	printf("\nEnter an integer for function 2: ");
+	printf("\n\nEnter an integer for function 2: ");
 	scanf("%d", &n);
 
 	// Function 2 activation
@@ -31,6 +43,8 @@ void main()
 	default: printf("\nAn unknown error has occured\n"); break;
 	}
 }
+
+// ********** Assignment functions ********** //
 
 int pack4Chars2Int(char c1, char c2, char c3, char c4)
 {
@@ -97,4 +111,38 @@ int checkEvenPairity(short input)
 	{
 		return 0;	// odd
 	}
+}
+
+// ********** Personal Functions ********** //
+
+void char2Bin(char c0)
+{
+	// Conversion
+	for (int i = 0; i < 8; i++)
+	{
+		printf("%d", !!((c0 << i) & 0x80));
+	}
+	printf("\n");
+}
+
+void dec2Bin(int n)
+{
+	// Variables
+	int binaryNum[32];
+	int i = 0;
+
+	// Conversion
+	while (n > 0)
+	{
+		binaryNum[i] = n % 2;
+		n = n / 2;
+		i++;
+	}
+
+	// Printing
+	for (int j = i - 1; j >= 0; j--)
+	{
+		printf("%d", binaryNum[j]);
+	}
+	printf("\n");
 }
