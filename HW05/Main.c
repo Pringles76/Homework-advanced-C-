@@ -19,20 +19,22 @@ void main()
 	insertBST(&T1, 8);
 	insertBST(&T1, 1);
 	insertBST(&T1, 4);
-	insertBST(&T1, 1);
-	insertBST(&T1, 2);
-	insertBST(&T1, 5);
-	insertBST(&T1, 8);
 	insertBST(&T1, 9);
-	insertBST(&T1, 8);
-	insertBST(&T1, 9);
+	//insertBST(&T1, 5);
+	//insertBST(&T1, 5);
+	//insertBST(&T1, 8);
+	//insertBST(&T1, 9);
+	//insertBST(&T1, 8);
+	//insertBST(&T1, 9);
 
 	// Printing check [3/6]
 	printTreeInorder(&T1);
+	print_ascii_tree(T1.root);
+	printf("\n");
 
 	// Index finding check [5/6]
-	int I = findIndexNFromLast(&T1, 3);
-	printf("The index is: %d\n\n", I);
+	int I = findIndexNFromLast(&T1, 4);
+	printf("The element in index 4 from last is: %d\n\n", I);
 
 	// Same hight check [6/6]
 	int S = sameHeightLeaves(&T1);

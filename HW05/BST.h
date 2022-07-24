@@ -21,7 +21,7 @@ typedef struct BST
 int isEmptyTree(BST* bst);
 void IOF(TreeNode* root);
 void POF(TreeNode* root);
-void RIO(TreeNode* root, int N, int* V);
+void RIO(TreeNode* root, int* N, int* V);
 
 int maximum(int L, int R);
 void sameH(TreeNode* root, int* check);
@@ -29,7 +29,7 @@ int getHeight(TreeNode* root);
 
 // *** Assignment Functions *** //
 void initBST(BST* bst);
-void insertBST(BST* bst, int value);
+void insertToTree(BST* bst, int value);
 void printTreeInorder(BST* bst);
 void destroyBST(BST* bst);
 int findIndexNFromLast(BST* bst, int N);

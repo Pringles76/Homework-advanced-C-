@@ -31,16 +31,48 @@ int isEmptyTree(BST* bst)
     }
 }
 
+// Insersion function
+void insertToTree(TreeNode* root, TreeNode* NewNode)
+{
+    // Left branch actions
+    if (NewNode->element <= root->element)
+    {
+        if (root->left == NULL)
+        {
+            root->left = NewNode;
+        }
+        else
+        {
+            insertToTree(root->left, NewNode);
+        }
+    }
+
+    // Right branch actions
+    else if (NewNode->element > root->element)
+    {
+        if (root->right == NULL)
+        {
+            root->right = NewNode;
+        }
+        else
+        {
+            insertToTree(root->right, NewNode);
+        }
+    }
+}
+
 // Inorder traversal function for printing
 void IOF(TreeNode* root)
 {
+    // Ending condition
     if (root == NULL)
     {
         return;
     }
 
+    // Progression
     IOF(root->left);
-    printf("%d" , root->element);
+    printf("%d  " , root->element);
     IOF(root->right);
 }
 
@@ -53,16 +85,16 @@ void POF(TreeNode* root)
         return;
     }
 
-    // Function actions
+    // Progression
     POF(root->left);
     POF(root->right);
     free(root);
 }
 
 // Reversed in order function for searching
-void RIO(TreeNode* root, int N, int* V)
+void RIO(TreeNode* root, int* N, int* V)
 {
-    // Ending condition 1
+    // Ending condition
     if (root == NULL)
     {
         return;
@@ -70,14 +102,15 @@ void RIO(TreeNode* root, int N, int* V)
 
     // Progression
     RIO(root->right, N, V);
-    N--;
-    RIO(root->left, N, V);
-
+    (*N)--;
     // Final touch
-    if (N == 1)
+    if (*N == 0)
     {
         *V = root->element;
     }
+    RIO(root->left, N, V);
+
+    
 }
 
 int maximum(int L, int R)
@@ -112,16 +145,12 @@ void sameH(TreeNode* root, int* check)
         return;
     }
 
-    // Progression 1
+    // Progression
     if (getHeight(root->left) != getHeight(root->right))
     {
         *check = 0;
         return;
     }
-
-    // Progression 2
-    sameH(root->left, check);
-    sameH(root->right, check);
 }
 
 
@@ -144,38 +173,17 @@ void insertBST(BST* bst, int value)
     NewNode->right = NULL;
 
     // Part [2/2]: New tree node insertion
-    
+
     // First insersion actions
     if (isEmptyTree(bst) == 1)
     {
         bst->root = NewNode;
         return;
     }
-
-    // Left branch actions
-    if (NewNode->element <= bst->root->element)
+    // Further insersion actions
+    else
     {
-        if (bst->root->left == NULL)
-        {
-            bst->root->left = NewNode;
-        }
-        else
-        {
-            insertBST(bst->root->left, NewNode);
-        }
-    }
-
-    // Right branch actions
-    if (NewNode->element > bst->root->element)
-    {
-        if (bst->root->right == NULL)
-        {
-            bst->root->right = NewNode;
-        }
-        else
-        {
-            insertBST(bst->root->right, NewNode);
-        }
+        insertToTree(bst->root, NewNode);
     }
 }
 
@@ -189,6 +197,7 @@ void printTreeInorder(BST* bst)
     }
 
     // Case [2/2]: Unempty tree
+    printf("Elements in order: ");
     IOF(bst->root);
     printf("\n\n");
 }
@@ -212,12 +221,12 @@ int findIndexNFromLast(BST* bst, int N)
     if (isEmptyTree(bst) == 1)
     {
         puts("Cannot search for the index because the tree is empty.");
-        return;
+        return -1;
     }
 
     // Case [2/2]: Unempty tree
     int V = 0;
-    RIO(bst, N, &V);
+    RIO(bst->root, &N, &V);
     return V;
 }
 
